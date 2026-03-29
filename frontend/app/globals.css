@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface-container-low: #f6f3ee;
+  --color-on-tertiary-fixed-variant: #38485b;
+  --color-error: #ba1a1a;
+  --color-on-error-container: #93000a;
+  --color-secondary: #545f72;
+  --color-primary-fixed-dim: #e8c176;
+  --color-on-secondary-fixed: #111c2c;
+  --color-error-container: #ffdad6;
+  --color-surface-variant: #e5e2dd;
+  --color-surface-tint: #775a19;
+  --color-outline: #7f7667;
+  --color-on-primary-fixed: #261900;
+  --color-on-primary-fixed-variant: #5c4200;
+  --color-on-primary-container: #fcd386;
+  --color-on-background: #1c1c19;
+  --color-background: #fcf9f4;
+  --color-surface-bright: #fcf9f4;
+  --color-on-secondary: #ffffff;
+  --color-surface-dim: #dcdad5;
+  --color-on-surface: #1c1c19;
+  --color-tertiary-fixed-dim: #b7c8df;
+  --color-on-secondary-container: #586377;
+  --color-tertiary-fixed: #d3e4fc;
+  --color-surface-container-highest: #e5e2dd;
+  --color-on-error: #ffffff;
+  --color-primary: #5d4300;
+  --color-on-surface-variant: #4d4639;
+  --color-tertiary-container: #4f6074;
+  --color-secondary-container: #d5e0f7;
+  --color-inverse-primary: #e8c176;
+  --color-surface: #fcf9f4;
+  --color-primary-container: #775a19;
+  --color-inverse-on-surface: #f3f0eb;
+  --color-on-primary: #ffffff;
+  --color-surface-container-lowest: #ffffff;
+  --color-secondary-fixed: #d8e3fa;
+  --color-secondary-fixed-dim: #bcc7dd;
+  --color-surface-container-high: #ebe8e3;
+  --color-outline-variant: #d1c5b4;
+  --color-primary-fixed: #ffdea3;
+  --color-inverse-surface: #31302d;
+  --color-surface-container: #f0ede8;
+  --color-on-secondary-fixed-variant: #3c475a;
+  --color-on-tertiary-fixed: #0b1d2e;
+  --color-tertiary: #38485b;
+  --color-on-tertiary-container: #c9daf2;
+  --color-on-tertiary: #ffffff;
+  --color-deep-obsidian: #041627;
+
+  --font-headline: var(--font-noto-serif), serif;
+  --font-body: var(--font-inter), sans-serif;
+  --font-label: var(--font-inter), sans-serif;
+}
+
+@layer utilities {
+  .bloom-effect {
+    @apply transition-all duration-400 ease-in-out;
+  }
+  .bloom-effect:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 0 20px rgba(93, 67, 0, 0.15);
+  }
+  .hero-gradient-overlay {
+    background: linear-gradient(to bottom, rgba(4, 22, 39, 0.4), rgba(4, 22, 39, 0.8));
+  }
+  .gold-thread {
+    height: 2px;
+    background: linear-gradient(90deg, #5d4300, #775a19);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

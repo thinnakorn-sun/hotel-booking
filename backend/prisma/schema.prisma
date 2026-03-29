@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  role      String   @default("STAFF")
+  status    String   @default("ACTIVE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Guest {
+  id          String    @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String    @unique
+  phone       String?
+  preferences String?
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Suite {
+  id            String    @id @default(uuid())
+  name          String
+  roomNumber    String    @unique
+  description   String
+  pricePerNight Decimal
+  status        String    @default("AVAILABLE")
+  /// SUITE | PENTHOUSE | VILLA — shown on public rooms filters
+  category      String    @default("SUITE")
+  imageUrl      String?
+  bookings      Booking[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Booking {
+  id              String        @id @default(uuid())
+  guestId         String
+  suiteId         String
+  checkInDate     DateTime
+  checkOutDate    DateTime
+  totalAmount     Decimal
+  status          String        @default("PENDING")
+  paymentMethod   String?
+  paymentStatus   String        @default("UNPAID")
+  checkedInAt     DateTime?
+  guest         Guest         @relation(fields: [guestId], references: [id])
+  suite         Suite         @relation(fields: [suiteId], references: [id])
+  transactions  Transaction[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Transaction {
+  id              String   @id @default(uuid())
+  bookingId       String
+  amount          Decimal
+  transactionDate DateTime @default(now())
+  description     String
+  status          String   @default("PENDING")
+  booking         Booking  @relation(fields: [bookingId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
