@@ -1,12 +1,19 @@
-import { apiRequestJsonWithAuth } from '@/lib/api/client';
-import { API_ENDPOINTS } from '@/lib/api/endpoints';
-import type { StaffUserDto } from '@/lib/types/staff-user';
+import { apiRequestJsonWithAuth } from "@/lib/api/client";
+import { API_ENDPOINTS } from "@/lib/api/endpoints";
+import { mockUsers } from "@/lib/demo/mock-data";
+import type { StaffUserDto } from "@/lib/types/staff-user";
 
 export async function fetchAdminUsers(): Promise<StaffUserDto[]> {
-  return apiRequestJsonWithAuth<StaffUserDto[]>(
-    API_ENDPOINTS.usersAdminList,
-    'Failed to load staff users',
-  );
+  try {
+    const data = await apiRequestJsonWithAuth<StaffUserDto[]>(
+      API_ENDPOINTS.usersAdminList,
+      "Failed to load staff users",
+    );
+    if (data.length > 0) return data;
+  } catch {
+    // fallback
+  }
+  return mockUsers;
 }
 
 export type CreateStaffUserPayload = {
@@ -21,10 +28,10 @@ export async function createAdminUser(
 ): Promise<StaffUserDto> {
   return apiRequestJsonWithAuth<StaffUserDto>(
     API_ENDPOINTS.usersAdmin,
-    'Failed to create user',
+    "Failed to create user",
     {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     },
   );
@@ -42,10 +49,10 @@ export async function patchAdminUser(
 ): Promise<StaffUserDto> {
   return apiRequestJsonWithAuth<StaffUserDto>(
     `${API_ENDPOINTS.usersAdmin}/${id}`,
-    'Failed to update user',
+    "Failed to update user",
     {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     },
   );

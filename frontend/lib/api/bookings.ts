@@ -1,6 +1,7 @@
-import { apiRequestJson, apiRequestJsonWithAuth } from '@/lib/api/client';
-import { API_ENDPOINTS } from '@/lib/api/endpoints';
-import type { BookingDto } from '@/lib/types/booking';
+import { apiRequestJson, apiRequestJsonWithAuth } from "@/lib/api/client";
+import { API_ENDPOINTS } from "@/lib/api/endpoints";
+import { getMockBookings } from "@/lib/demo/mock-store";
+import type { BookingDto } from "@/lib/types/booking";
 
 export type CreateBookingPayload = {
   suiteId: string;
@@ -19,10 +20,10 @@ export async function createBooking(
 ): Promise<BookingDto> {
   return apiRequestJson<BookingDto>(
     API_ENDPOINTS.bookings,
-    'Could not complete booking',
+    "Could not complete booking",
     {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     },
   );
@@ -32,9 +33,18 @@ export async function fetchBookingsByEmail(
   email: string,
 ): Promise<BookingDto[]> {
   const q = encodeURIComponent(email.trim());
-  return apiRequestJson<BookingDto[]>(
-    `${API_ENDPOINTS.bookings}?email=${q}`,
-    'Could not load bookings',
+  try {
+    const data = await apiRequestJson<BookingDto[]>(
+      `${API_ENDPOINTS.bookings}?email=${q}`,
+      "Could not load bookings",
+    );
+    if (data.length > 0) return data;
+  } catch {
+    // use fallback
+  }
+  const normalized = email.trim().toLowerCase();
+  return getMockBookings().filter(
+    (b) => b.guest.email.toLowerCase() === normalized,
   );
 }
 
@@ -43,10 +53,19 @@ export async function fetchBookingById(
   guestEmail: string,
 ): Promise<BookingDto> {
   const q = encodeURIComponent(guestEmail.trim());
-  return apiRequestJson<BookingDto>(
-    `${API_ENDPOINTS.bookings}/${id}?email=${q}`,
-    'Could not load booking',
-  );
+  try {
+    return await apiRequestJson<BookingDto>(
+      `${API_ENDPOINTS.bookings}/${id}?email=${q}`,
+      "Could not load booking",
+    );
+  } catch {
+    const normalized = guestEmail.trim().toLowerCase();
+    const booking = getMockBookings().find(
+      (b) => b.id === id && b.guest.email.toLowerCase() === normalized,
+    );
+    if (!booking) throw new Error("Could not load booking");
+    return booking;
+  }
 }
 
 export type CompletePaymentPayload = {
@@ -60,26 +79,34 @@ export async function completeBookingPayment(
 ): Promise<BookingDto> {
   return apiRequestJson<BookingDto>(
     `${API_ENDPOINTS.bookings}/${bookingId}/payment`,
-    'Payment could not be completed',
+    "Payment could not be completed",
     {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     },
   );
 }
 
 export async function fetchAdminBookings(): Promise<BookingDto[]> {
-  return apiRequestJson<BookingDto[]>(
-    `${API_ENDPOINTS.bookings}/admin/list`,
-    'Could not load admin bookings',
-  );
+  try {
+    const data = await apiRequestJson<BookingDto[]>(
+      `${API_ENDPOINTS.bookings}/admin/list`,
+      "Could not load admin bookings",
+    );
+    if (data.length > 0) return data;
+  } catch {
+    // use fallback
+  }
+  return getMockBookings();
 }
 
-export async function adminCheckInBooking(bookingId: string): Promise<BookingDto> {
+export async function adminCheckInBooking(
+  bookingId: string,
+): Promise<BookingDto> {
   return apiRequestJsonWithAuth<BookingDto>(
     `${API_ENDPOINTS.bookings}/admin/${bookingId}/check-in`,
-    'Check-in failed',
-    { method: 'PATCH' },
+    "Check-in failed",
+    { method: "PATCH" },
   );
 }

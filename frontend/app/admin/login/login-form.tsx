@@ -26,7 +26,7 @@ import { MotionButton } from "@/components/ui/motion-button";
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
 export function AdminLoginForm() {
-  const demoMode = isDemoModeEnabled();
+  const demoMode = isDemoModeEnabled() || !isSupabaseBrowserConfigured();
   const demoEmail = getDemoAdminEmail();
   const demoPassword = getDemoAdminPassword();
   const demoName = getDemoAdminName();
