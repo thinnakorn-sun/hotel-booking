@@ -83,9 +83,12 @@ export function AdminLoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (demoMode) {
-      const normalizedEmail = email.trim().toLowerCase();
-      if (normalizedEmail !== demoEmail || password !== demoPassword) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const isDemoCredentialMatch =
+      normalizedEmail === demoEmail && password === demoPassword;
+
+    if (demoMode || isDemoCredentialMatch) {
+      if (!isDemoCredentialMatch) {
         setError("อีเมลหรือรหัสผ่านเดโมไม่ถูกต้อง");
         return;
       }
