@@ -6,7 +6,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DEFAULT_SUITE_STATUS } from '../suite/constants/suite-status';
-import { SuiteRepository } from '../suite/suite.repository';
 import { SuiteService } from '../suite/suite.service';
 import { BookingRepository } from './booking.repository';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -20,7 +19,6 @@ const MS_PER_DAY = 86_400_000;
 export class BookingService {
   constructor(
     private readonly bookingRepository: BookingRepository,
-    private readonly suiteRepository: SuiteRepository,
     private readonly suiteService: SuiteService,
     private readonly bookingResponseMapper: BookingResponseMapper,
   ) {}
@@ -38,7 +36,7 @@ export class BookingService {
       throw new BadRequestException('Minimum stay is one night');
     }
 
-    const suite = await this.suiteRepository.findById(dto.suiteId);
+    const suite = await this.suiteService.findByIdRaw(dto.suiteId);
     if (!suite) {
       throw new NotFoundException('Suite not found');
     }

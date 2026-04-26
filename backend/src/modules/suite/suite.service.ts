@@ -10,6 +10,7 @@ import { CreateSuiteDto } from "./dto/create-suite.dto";
 import { FindAvailableSuitesDto } from "./dto/find-available-suites.dto";
 import { SuiteResponseMapper } from "./mappers/suite-response.mapper";
 import { SuiteRepository } from "./suite.repository";
+import type { Suite } from "../../prisma-client";
 import type { SuiteResponse } from "./types/suite-response.type";
 
 @Injectable()
@@ -58,6 +59,14 @@ export class SuiteService {
 
   async reconcileSuite(suiteId: string): Promise<void> {
     await this.suiteRepository.reconcileSuiteStatus(suiteId);
+  }
+
+  async reconcileAllSuites(): Promise<void> {
+    await this.suiteRepository.reconcileAllSuiteStatuses();
+  }
+
+  async findByIdRaw(id: string): Promise<Suite | null> {
+    return this.suiteRepository.findById(id);
   }
 
   async create(dto: CreateSuiteDto): Promise<SuiteResponse> {

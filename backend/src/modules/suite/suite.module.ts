@@ -7,6 +7,6 @@ import { SuiteService } from './suite.service';
 @Module({
   controllers: [SuiteController],
   providers: [SuiteService, SuiteRepository, SuiteResponseMapper],
-  exports: [SuiteRepository, SuiteService],
+  exports: [SuiteService],
 })
 export class SuiteModule {}

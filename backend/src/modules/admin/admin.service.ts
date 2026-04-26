@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { SuiteRepository } from '../suite/suite.repository';
+import { SuiteService } from '../suite/suite.service';
 
 function utcDayRange(ref: Date): { start: Date; end: Date } {
   const y = ref.getUTCFullYear();
@@ -35,7 +35,7 @@ function overlapsDay(
 export class AdminService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly suiteRepository: SuiteRepository,
+    private readonly suiteService: SuiteService,
   ) {}
 
   async getNotifications(sinceIso?: string) {
@@ -115,7 +115,7 @@ export class AdminService {
   }
 
   async getDashboard() {
-    await this.suiteRepository.reconcileAllSuiteStatuses();
+    await this.suiteService.reconcileAllSuites();
 
     const now = new Date();
     const rentableSuites = await this.prisma.suite.count({
@@ -304,7 +304,7 @@ export class AdminService {
   }
 
   async getArrivalsForDate(isoDate: string) {
-    await this.suiteRepository.reconcileAllSuiteStatuses();
+    await this.suiteService.reconcileAllSuites();
     const ref = new Date(isoDate);
     if (Number.isNaN(ref.getTime())) {
       return { date: isoDate, arrivals: [] as unknown[] };

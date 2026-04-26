@@ -10,3 +10,11 @@ backend/src/generated/
 *.tsbuildinfo
 .env*
 !.env.example
+!.env*.example
+**/.env
+**/.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+service-account*.json
